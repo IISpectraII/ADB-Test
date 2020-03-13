@@ -27,10 +27,12 @@ espera = 1
 
 #Mostrar los datos del estudiante y obtener el numero de acciones a ejecutar
 def introduccion(): 
+    global valorN
     print('Ejecución de comandos ADB para realizar tareas de depuración')
     print('Geovanny Andrés González - 201719528')
     print('Construcción de aplicaciones móviles')
     print('Universidad de los Andes - Colombia \n')
+    print('Valor de X para hacer back %d' % eventosAlBack)
     valorN = int(input("Por favor ingrese el número de acciones a ejecutar (N) \n"))
 
 #Ejecutar un comando en la consola de Windows.
@@ -65,10 +67,15 @@ def desintalarAplicacion(nombrePaquete):
 def menuNotificaciones():
     ejecutar('%s shell cmd statusbar expand-notifications' % adb)
 
+def hacerBack():
+    ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
+
 """ //======== Eventos a realizar ========\\"""
 # Ir a la ventana de inicio del sistema y ejecutar la primera aplicación disponible en el launcher
 def actividad1():
     ejecutar('%s shell input keyevent KEYCODE_HOME' % adb) #Cambiar a la ventana de inicio del dispositivo
+    ejecutar('%s shell input keyevent KEYCODE_HOME' % adb) #Ir a la primera pantalla de inicio
+    
     screenShot()
     
     # Debido a las diferentes versiones de Android la ventana de incio del menú no siempre está disponible 
@@ -102,7 +109,7 @@ def actividad2():
 def actividad3():
     wifi = ejecutar('%s shell settings get global wifi_on' % adb)
     wifi = wifi.strip()
-    mensaje = 'El adaptador WiFi está encendido' if (wifi == '1') else 'El adaptador WiFi está apagado'
+    mensaje = 'El adaptador WiFi está encendido' if (wifi != '0') else 'El adaptador WiFi está apagado'
     print(mensaje)
     menuNotificaciones()
     time.sleep(espera)
@@ -177,9 +184,11 @@ def actividad9():
     ejecutar('%s shell input text Geovanny-Andres-Gonzalez' % adb)
     screenShot()
 
+actividades = [actividad1, actividad2, actividad3, actividad4, actividad5, actividad6, actividad8, actividad9]
+
 """ Instrucciones """
 # Acceder al directorio de ADB
-#introduccion()
+introduccion()
 ejecutar('echo {}'.format("======== Ejecutando procesos ========"))
 ejecutar('echo {}'.format("======== Accediendo al directorio de ADB ========"))
 cambiarDirectorio(rutaADB) # Se accede a la herramienta ADB
@@ -187,19 +196,18 @@ cambiarDirectorio(rutaADB) # Se accede a la herramienta ADB
 #Listar los dispositivos conectados.
 ejecutar('echo {}'.format(" ======== Dispositivos conectados ========"))
 ejecutar('%s devices' % adb) #Listar todas las aplicaciones del dispositivo
-"""
+
 # Instalar aplicación en el sistema, en este caso se escoge WolframAlpha
-ejecutar('echo %s' % '======== Instalando aplicación ========')
+ejecutar('echo {}'.format(" ======== Instalando Aplicacion ========"))
 ejecutar('%s install -d "%s"' % (adb, rutaAPK))
 
 #Ejecutar la aplicación instalada
 ejecutarAplicacion(walphaPackage)
-"""
-#actividad1()
-#actividad2()
-#actividad3()
-#actividad4()
-actividad5()
-actividad6()
-actividad8()
-actividad9()
+
+for i in range (0, valorN): #Ejecutar cuantas actividades hayan solicitado
+    j = i % len(actividades) #Ejecutar la actividad en la lista
+    actividades[j]()
+    if (i % eventosAlBack == 0): # Si el numero de eventos para hacer la acción back (X) se alcanzan
+        hacerBack()
+
+desintalarAplicacion(walphaPackage)
