@@ -15,7 +15,7 @@ Algunos actividades se realizaron ejecutando instrucciones tap y drag and drop c
 
 Debido a enunciado asignado, algunas actividades se repetían especificamente el regresar a la pantalla de inicio y agregar contacto por ello solo existen 8 diferentes. Para culminar se deja un archivo HTML con la ejecución del script en mi telefono. Finalmente, el script solo funciona con dispositivos conectados fisicamente, no con emuladores.
 
-Para ejecutarlo despues de haber realizado las modificaciones respectivas y estar en la carpeta del repositorio use ´python ./script.py´
+Para ejecutarlo despues de haber realizado las modificaciones respectivas y estar en la carpeta del repositorio use ``python ./script.py``
 
 Saludos cordiales 
 
