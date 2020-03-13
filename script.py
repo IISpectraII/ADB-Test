@@ -22,6 +22,8 @@ rutaRepositorio = r"C:\Users\Geovanny\Desktop\Univesidad de los Andes\Septimo Se
 indiceScreen = 0
 indiceContacto = 0
 espera = 1
+f = None # Puntero al archivo HTML
+capturaActual = ""
 
 #Funciones a utilizar
 
@@ -34,6 +36,34 @@ def introduccion():
     print('Universidad de los Andes - Colombia \n')
     print('Valor de X para hacer back %d' % eventosAlBack)
     valorN = int(input("Por favor ingrese el número de acciones a ejecutar (N) \n"))
+
+#Generar HTML para documento
+def HTMLBase():
+    global f
+    f = open("InformeHTML.html", "w+")
+    f.write('<!DOCTYPE html>')
+    f.write('<html lang="es-ES">')
+    f.write('  <head>')
+    f.write('    <meta charset="utf-8" />')
+    f.write('    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">')
+    f.write('    <title>Informe de actividades - Aplicaciones móviles</title>')
+    f.write('  </head>')
+    f.write('  <body>')
+    f.write('    <div class="container-fluid">')
+
+#Cierra el HTML para finalizar su edición
+def HTMLCierre():
+    f.write('    </div>')
+    f.write('    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>')
+    f.write('  </body>')
+    f.write('</html>')
+    f.close()
+
+#Inserta un nuevo elemento de HTML
+def HTMLElemento(indice, descripcion, ruta):
+    f.write('        <h1>Actividad %d</h1>' % indice)
+    f.write('        <p>%s</p>' % descripcion)
+    f.write('        <img src="%s" alt="Evidencia Actividad">' % ruta)
 
 #Ejecutar un comando en la consola de Windows.
 #Retorna la salida del proceso en ejecución como una cadena de texto
