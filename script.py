@@ -20,6 +20,7 @@ valorN = -1
 eventosAlBack = (201719528 % 4) + 8
 rutaRepositorio = r"C:\Users\Geovanny\Desktop\Univesidad de los Andes\Septimo Semestre - 2020-1\Construccion de Aplicaciones Moviles\Parcial ADB\ADB-Test"
 indiceScreen = 0
+indiceContacto = 0
 #Funciones a utilizar
 
 #Mostrar los datos del estudiante y obtener el numero de acciones a ejecutar
@@ -80,9 +81,56 @@ def actividad3():
     print(mensaje)
     screenShot()
 
+#Verificar si el telefono se encuentra en modo avión
+def actividad4():
+    airplane = ejecutar('%s shell settings get global airplane_mode_on' % adb)
+    airplane = airplane.strip()
+    mensaje = 'El telefono se encuentra en modo avión' if (airplane == '1') else 'El telefono no se encuentra en modo avión'
+    print(mensaje)
+    screenShot()
+
+#Abrir la aplicación de contactos y agregar uno nuevo
+def actividad5():
+    global indiceContacto
+    ejecutarAplicacion('com.android.contacts') #Abrir la aplicación de contactos
+    time.sleep(0.1) #Delay de 100 ms para esperar
+    #screenShot()
+    ejecutar('%s shell input tap 539 2200' % adb)
+    time.sleep(0.1) #Delay de 100 ms para esperar
+    ejecutar('%s shell input tap 930 2100' % adb)
+    ejecutar('%s shell input text contacto%s' % (adb, indiceContacto))
+    time.sleep(0.4) #Delay de 400 ms para esperar
+    ejecutar('%s shell input tap 430 1100' % adb)
+    ejecutar('%s shell input text %s' % (adb, str(indiceContacto) + str(indiceScreen)))
+    time.sleep(0.4) #Delay de 400 ms para esperar
+    screenShot()
+    ejecutar('%s shell input tap 996 115' % adb)
+    screenShot()    
+    indiceContacto += 1
+
+#Disminuir el volumen del telefono móvil
+def actividad6():
+    ejecutar('%s shell media volume --show --stream 3 --set 1' % adb) #Llevar el volumen al minimo
+    screenShot()
+    ejecutar('%s shell media volume --show --stream 3 --set 6' % adb) #Llevar el volumen a la mitad
+    screenShot()
+    ejecutar('%s shell media volume --show --stream 3 --set 15' % adb) #Llevar el volumen al maximo
+    screenShot()
+
+#Encender el adaptador bluetooth
+def actividad8():
+    ejecutar('%s shell am start -a android.bluetooth.adapter.action.REQUEST_ENABLE' % adb)
+    screenShot()
+    ejecutar('%s shell input tap 800 2200' % adb)
+    screenShot()
+
+#Escribir el nombre en una aplicación con entrada de texto
+def actividad9():
+    
+
 """ Instrucciones """
 # Acceder al directorio de ADB
-introduccion()
+#introduccion()
 ejecutar('echo {}'.format("======== Ejecutando procesos ========"))
 ejecutar('echo {}'.format("======== Accediendo al directorio de ADB ========"))
 cambiarDirectorio(rutaADB) # Se accede a la herramienta ADB
@@ -100,3 +148,7 @@ ejecutarAplicacion(walphaPackage)
 """
 #actividad1()
 #actividad3()
+#actividad4()
+#actividad5()
+#actividad6()
+#actividad8()
