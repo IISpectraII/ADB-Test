@@ -21,6 +21,8 @@ eventosAlBack = (201719528 % 4) + 8
 rutaRepositorio = r"C:\Users\Geovanny\Desktop\Univesidad de los Andes\Septimo Semestre - 2020-1\Construccion de Aplicaciones Moviles\Parcial ADB\ADB-Test"
 indiceScreen = 0
 indiceContacto = 0
+espera = 1
+
 #Funciones a utilizar
 
 #Mostrar los datos del estudiante y obtener el numero de acciones a ejecutar
@@ -57,6 +59,12 @@ def screenShot():
     ejecutar('%s shell screencap -p /sdcard/%s.png' % (adb, nombreCaptura)) #Toma la captura de pantalla
     ejecutar('%s pull /sdcard/%s.png "%s"' % (adb, nombreCaptura, fotos))
 
+def desintalarAplicacion(nombrePaquete):
+    ejecutar('%s uninstall %s' % (adb, nombrePaquete))
+
+def menuNotificaciones():
+    ejecutar('%s shell cmd statusbar expand-notifications' % adb)
+
 """ //======== Eventos a realizar ========\\"""
 # Ir a la ventana de inicio del sistema y ejecutar la primera aplicación disponible en el launcher
 def actividad1():
@@ -70,7 +78,24 @@ def actividad1():
     # Saludos. Geovanny.
 
     ejecutar('%s shell input tap 110 200' % adb) #Abre la aplicación de reloj
-    time.sleep(0.150) #Delay de 150 ms para dejar ejecutar bien la segunda aplicación 
+    time.sleep(espera)
+    screenShot()
+
+#Utilizar long-tap con 3 aplicaciones en la pantalla de inicio 
+def actividad2():
+    ejecutar('%s shell input keyevent KEYCODE_HOME' % adb) #Ir a la primera pantalla de inicio
+    ejecutar('%s shell input keyevent KEYCODE_HOME' % adb)
+    ejecutar('%s shell input swipe 900 1000 100 1000' % adb) #Cambiar de ventana
+    ejecutar('%s shell input draganddrop 140 250 140 250 350' % adb)
+    time.sleep(espera)
+    screenShot()
+    ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
+    ejecutar('%s shell input draganddrop 140 530 140 530 350' % adb)
+    time.sleep(espera)
+    screenShot()
+    ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
+    ejecutar('%s shell input draganddrop 140 800 140 800 350' % adb)
+    time.sleep(espera)
     screenShot()
 
 # Verificar el estado del adaptador WiFi
@@ -79,7 +104,12 @@ def actividad3():
     wifi = wifi.strip()
     mensaje = 'El adaptador WiFi está encendido' if (wifi == '1') else 'El adaptador WiFi está apagado'
     print(mensaje)
-    screenShot()
+    menuNotificaciones()
+    time.sleep(espera)
+    screenShot()    
+    ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
+
+
 
 #Verificar si el telefono se encuentra en modo avión
 def actividad4():
@@ -87,22 +117,26 @@ def actividad4():
     airplane = airplane.strip()
     mensaje = 'El telefono se encuentra en modo avión' if (airplane == '1') else 'El telefono no se encuentra en modo avión'
     print(mensaje)
-    screenShot()
+    menuNotificaciones()
+    time.sleep(espera)
+    screenShot()    
+    ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
 
 #Abrir la aplicación de contactos y agregar uno nuevo
 def actividad5():
+    time.sleep(0.4)
     global indiceContacto
     ejecutarAplicacion('com.android.contacts') #Abrir la aplicación de contactos
-    time.sleep(0.1) #Delay de 100 ms para esperar
-    #screenShot()
+    time.sleep(espera)
+    screenShot()
     ejecutar('%s shell input tap 539 2200' % adb)
-    time.sleep(0.1) #Delay de 100 ms para esperar
+    time.sleep(espera)
     ejecutar('%s shell input tap 930 2100' % adb)
     ejecutar('%s shell input text contacto%s' % (adb, indiceContacto))
-    time.sleep(0.4) #Delay de 400 ms para esperar
+    time.sleep(espera)
     ejecutar('%s shell input tap 430 1100' % adb)
     ejecutar('%s shell input text %s' % (adb, str(indiceContacto) + str(indiceScreen)))
-    time.sleep(0.4) #Delay de 400 ms para esperar
+    time.sleep(espera)
     screenShot()
     ejecutar('%s shell input tap 996 115' % adb)
     screenShot()    
@@ -112,21 +146,36 @@ def actividad5():
 def actividad6():
     ejecutar('%s shell media volume --show --stream 3 --set 1' % adb) #Llevar el volumen al minimo
     screenShot()
+    time.sleep(espera)
     ejecutar('%s shell media volume --show --stream 3 --set 6' % adb) #Llevar el volumen a la mitad
     screenShot()
+    time.sleep(espera)
     ejecutar('%s shell media volume --show --stream 3 --set 15' % adb) #Llevar el volumen al maximo
     screenShot()
 
 #Encender el adaptador bluetooth
 def actividad8():
     ejecutar('%s shell am start -a android.bluetooth.adapter.action.REQUEST_ENABLE' % adb)
+    time.sleep(espera)
     screenShot()
     ejecutar('%s shell input tap 800 2200' % adb)
     screenShot()
 
 #Escribir el nombre en una aplicación con entrada de texto
 def actividad9():
-    
+    ejecutar('%s shell input keyevent KEYCODE_HOME' % adb) #Ir a la primera pantalla de inicio
+    ejecutar('%s shell input keyevent KEYCODE_HOME' % adb)
+    ejecutar('%s shell input swipe 900 1000 100 1000' % adb) #Cambiar de ventana
+    ejecutar('%s shell input tap 140 530' % adb)
+    time.sleep(espera)
+    screenShot()
+    ejecutar('%s shell input tap 930 2100' % adb)
+    time.sleep(espera)
+    screenShot()
+    time.sleep(espera)
+    ejecutar('%s shell input roll 10 10' % adb)
+    ejecutar('%s shell input text Geovanny-Andres-Gonzalez' % adb)
+    screenShot()
 
 """ Instrucciones """
 # Acceder al directorio de ADB
@@ -147,8 +196,10 @@ ejecutar('%s install -d "%s"' % (adb, rutaAPK))
 ejecutarAplicacion(walphaPackage)
 """
 #actividad1()
+#actividad2()
 #actividad3()
 #actividad4()
-#actividad5()
-#actividad6()
-#actividad8()
+actividad5()
+actividad6()
+actividad8()
+actividad9()
