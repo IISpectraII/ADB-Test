@@ -13,7 +13,9 @@ De igual manera debe cambiar la ruta donde se encuentra el repostorio instalado 
 
 Algunos actividades se realizaron ejecutando instrucciones tap y drag and drop controlando la pantalla del dispositivo. Debido a que todos dispositivos Android no son uniformes algunas actividades están propensas a fallar. El dispositivo móvil de referencia para ejecutar el script es un _Huawei Mate 20 Lite_.
 
-Debido a enunciado asignado, algunas actividades se repetían especificamente el regresar a la pantalla de inicio y agregar contacto por ello solo existen 8 diferentes. Para culminar se deja un archivo HTML con la ejecución del script en mi telefono. Finalmente, el script solo funciona con dispositivos conectados fisicamente, no con emuladores.
+Debido a enunciado asignado, algunas actividades se repetían especificamente el regresar a la pantalla de inicio y agregar contacto por ello solo existen 8 diferentes. Para culminar se deja un archivo HTML con la ejecución del script en mi telefono. Finalmente, el script solo funciona con dispositivos conectados fisicamente, no con emuladores. Si se desea probar la opción de encender el Bluetooth por favor apaguelo en su dispositivo para que la aplicación pueda solicitar correctamente los permisos de encendido
+
+Para ejecutarlo despues de haber realizado las modificaciones respectivas y estar en la carpeta del repositorio use ``python ./script.py``
 
 Saludos cordiales 
 
