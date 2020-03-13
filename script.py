@@ -23,7 +23,7 @@ indiceScreen = 0
 indiceContacto = 0
 espera = 1
 f = None # Puntero al archivo HTML
-capturaActual = ""
+nombreCaptura = ""
 
 #Funciones a utilizar
 
@@ -61,9 +61,12 @@ def HTMLCierre():
 
 #Inserta un nuevo elemento de HTML
 def HTMLElemento(indice, descripcion, ruta):
-    f.write('        <h1>Actividad %d</h1>' % indice)
-    f.write('        <p>%s</p>' % descripcion)
-    f.write('        <img src="%s" alt="Evidencia Actividad">' % ruta)
+    f.write('        <h2>Actividad %d</h2>' % indice)
+    f.write('        <h3>%s</h3>' % descripcion)
+    f.write('        <img src="./capturas/%s.png" alt="Evidencia Actividad">' % ruta)
+
+def HTMLEvento(indice):
+    f.write('        <h1>Evento ejecutado #%d</h1>' % indice)
 
 #Ejecutar un comando en la consola de Windows.
 #Retorna la salida del proceso en ejecución como una cadena de texto
@@ -85,6 +88,7 @@ def ejecutarAplicacion(nombrePaquete):
 
 def screenShot():
     global indiceScreen
+    global nombreCaptura
     nombreCaptura = 'pantallazo%d' % indiceScreen
     indiceScreen += 1
     fotos = rutaRepositorio + "/capturas"
@@ -107,7 +111,7 @@ def actividad1():
     ejecutar('%s shell input keyevent KEYCODE_HOME' % adb) #Ir a la primera pantalla de inicio
     
     screenShot()
-    
+    HTMLElemento(1, "Cambiando a la ventana de inicio", nombreCaptura)
     # Debido a las diferentes versiones de Android la ventana de incio del menú no siempre está disponible 
     # un ejemplo de ello son los dispositivos Huawei con interfaz EMUI
     # Por ello utilizaremos las opciones de bajo nivel para realizar un tap en la primera aplicación de mi móvil
@@ -117,36 +121,40 @@ def actividad1():
     ejecutar('%s shell input tap 110 200' % adb) #Abre la aplicación de reloj
     time.sleep(espera)
     screenShot()
+    HTMLElemento(1, "Primera aplicacion disponible en el sistema", nombreCaptura)
 
 #Utilizar long-tap con 3 aplicaciones en la pantalla de inicio 
 def actividad2():
     ejecutar('%s shell input keyevent KEYCODE_HOME' % adb) #Ir a la primera pantalla de inicio
     ejecutar('%s shell input keyevent KEYCODE_HOME' % adb)
+    HTMLElemento(2, "Cambiando a la ventana de inicio", nombreCaptura)
     ejecutar('%s shell input swipe 900 1000 100 1000' % adb) #Cambiar de ventana
     ejecutar('%s shell input draganddrop 140 250 140 250 350' % adb)
     time.sleep(espera)
     screenShot()
+    HTMLElemento(2, "Long-tap para la primera aplicacion", nombreCaptura)
     ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
     ejecutar('%s shell input draganddrop 140 530 140 530 350' % adb)
     time.sleep(espera)
     screenShot()
+    HTMLElemento(2, "Long-tap para la segunda aplicacion", nombreCaptura)
     ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
     ejecutar('%s shell input draganddrop 140 800 140 800 350' % adb)
     time.sleep(espera)
     screenShot()
+    HTMLElemento(2, "Long-tap para la tercera aplicacion", nombreCaptura)
 
 # Verificar el estado del adaptador WiFi
 def actividad3():
     wifi = ejecutar('%s shell settings get global wifi_on' % adb)
     wifi = wifi.strip()
-    mensaje = 'El adaptador WiFi está encendido' if (wifi != '0') else 'El adaptador WiFi está apagado'
+    mensaje = 'El adaptador WiFi esta encendido' if (wifi != '0') else 'El adaptador WiFi esta apagado'
     print(mensaje)
     menuNotificaciones()
     time.sleep(espera)
-    screenShot()    
+    screenShot()
+    HTMLElemento(3, mensaje, nombreCaptura)    
     ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
-
-
 
 #Verificar si el telefono se encuentra en modo avión
 def actividad4():
@@ -156,7 +164,8 @@ def actividad4():
     print(mensaje)
     menuNotificaciones()
     time.sleep(espera)
-    screenShot()    
+    screenShot()
+    HTMLElemento(4, mensaje, nombreCaptura)        
     ejecutar('%s shell input keyevent KEYCODE_BACK' % adb)
 
 #Abrir la aplicación de contactos y agregar uno nuevo
@@ -166,6 +175,7 @@ def actividad5():
     ejecutarAplicacion('com.android.contacts') #Abrir la aplicación de contactos
     time.sleep(espera)
     screenShot()
+    HTMLElemento(5, "Abrir la aplicacion de contactos", nombreCaptura)    
     ejecutar('%s shell input tap 539 2200' % adb)
     time.sleep(espera)
     ejecutar('%s shell input tap 930 2100' % adb)
@@ -175,28 +185,35 @@ def actividad5():
     ejecutar('%s shell input text %s' % (adb, str(indiceContacto) + str(indiceScreen)))
     time.sleep(espera)
     screenShot()
+    HTMLElemento(5, "Llenar los datos del contacto", nombreCaptura)    
     ejecutar('%s shell input tap 996 115' % adb)
-    screenShot()    
+    screenShot()
+    HTMLElemento(5, "Nuevo contacto guardado", nombreCaptura)        
     indiceContacto += 1
 
 #Disminuir el volumen del telefono móvil
 def actividad6():
     ejecutar('%s shell media volume --show --stream 3 --set 1' % adb) #Llevar el volumen al minimo
     screenShot()
+    HTMLElemento(6, "Volumen minimo", nombreCaptura)        
     time.sleep(espera)
     ejecutar('%s shell media volume --show --stream 3 --set 6' % adb) #Llevar el volumen a la mitad
     screenShot()
+    HTMLElemento(6, "Volumen medio", nombreCaptura)        
     time.sleep(espera)
     ejecutar('%s shell media volume --show --stream 3 --set 15' % adb) #Llevar el volumen al maximo
     screenShot()
+    HTMLElemento(7, "Volumen alto", nombreCaptura)        
 
 #Encender el adaptador bluetooth
 def actividad8():
     ejecutar('%s shell am start -a android.bluetooth.adapter.action.REQUEST_ENABLE' % adb)
     time.sleep(espera)
     screenShot()
+    HTMLElemento(8, "Solicitar permisos para activar Bluetooth", nombreCaptura)        
     ejecutar('%s shell input tap 800 2200' % adb)
     screenShot()
+    HTMLElemento(8, "Bluetooth activado", nombreCaptura)        
 
 #Escribir el nombre en una aplicación con entrada de texto
 def actividad9():
@@ -206,19 +223,23 @@ def actividad9():
     ejecutar('%s shell input tap 140 530' % adb)
     time.sleep(espera)
     screenShot()
+    HTMLElemento(9, "Abrir aplicacion de texto", nombreCaptura)
     ejecutar('%s shell input tap 930 2100' % adb)
     time.sleep(espera)
     screenShot()
+    HTMLElemento(9, "Crear nota", nombreCaptura)
     time.sleep(espera)
     ejecutar('%s shell input roll 10 10' % adb)
     ejecutar('%s shell input text Geovanny-Andres-Gonzalez' % adb)
     screenShot()
+    HTMLElemento(9, "Escribir nombre", nombreCaptura)
 
 actividades = [actividad1, actividad2, actividad3, actividad4, actividad5, actividad6, actividad8, actividad9]
 
 """ Instrucciones """
 # Acceder al directorio de ADB
 introduccion()
+HTMLBase() # Construye el HTML inicial
 ejecutar('echo {}'.format("======== Ejecutando procesos ========"))
 ejecutar('echo {}'.format("======== Accediendo al directorio de ADB ========"))
 cambiarDirectorio(rutaADB) # Se accede a la herramienta ADB
@@ -233,11 +254,18 @@ ejecutar('%s install -d "%s"' % (adb, rutaAPK))
 
 #Ejecutar la aplicación instalada
 ejecutarAplicacion(walphaPackage)
+time.sleep(0.35)
+screenShot()
+HTMLElemento(0, "Ejecutar aplicacion instalada", nombreCaptura)
+ejecutar('%s shell input keyevent KEYCODE_BACK' % adb) 
+ejecutar('%s shell input keyevent KEYCODE_HOME' % adb)
 
 for i in range (0, valorN): #Ejecutar cuantas actividades hayan solicitado
     j = i % len(actividades) #Ejecutar la actividad en la lista
-    actividades[j]()
+    HTMLEvento(i + 1) #Imprime el registro del evento en el HTML
+    actividades[j]() #Ejecutar
     if (i % eventosAlBack == 0): # Si el numero de eventos para hacer la acción back (X) se alcanzan
         hacerBack()
 
 desintalarAplicacion(walphaPackage)
+HTMLCierre() #Suelta el Stream
