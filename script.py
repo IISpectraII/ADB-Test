@@ -12,13 +12,14 @@ import time
 
 """ //======== Variables y funciones a utilizar ========\\"""
 # Ruta de la herramienta ADB. Por favor asegurese de utilizar la ruta absoluta donde se encuentran las herramientas
-rutaADB = r'C:\Users\Geovanny\AppData\Local\Android\Sdk\platform-tools\\'
+rutaADB = r'C:\Users\Geovanny\AppData\Local\Android\Sdk\platform-tools\\' #Modificar por el directorio donde se encuentra ADB
 adb = r'.\adb.exe'
-rutaAPK = r'C:\Users\Geovanny\Desktop\Univesidad de los Andes\Septimo Semestre - 2020-1\Construccion de Aplicaciones Moviles\Parcial ADB\ADB-Test\walpha.apk'
+# Ruta Absoluta del repositorio 
+rutaRepositorio = r"C:\Users\Geovanny\Desktop\Univesidad de los Andes\Septimo Semestre - 2020-1\Construccion de Aplicaciones Moviles\Parcial ADB\ADB-Test" 
+rutaAPK = rutaRepositorio + '/walpha.apk'
 walphaPackage = "com.wolfram.android.alpha"
 valorN = -1
 eventosAlBack = (201719528 % 4) + 8
-rutaRepositorio = r"C:\Users\Geovanny\Desktop\Univesidad de los Andes\Septimo Semestre - 2020-1\Construccion de Aplicaciones Moviles\Parcial ADB\ADB-Test"
 indiceScreen = 0
 indiceContacto = 0
 espera = 1
@@ -246,15 +247,17 @@ cambiarDirectorio(rutaADB) # Se accede a la herramienta ADB
 
 #Listar los dispositivos conectados.
 ejecutar('echo {}'.format(" ======== Dispositivos conectados ========"))
-ejecutar('%s devices' % adb) #Listar todas las aplicaciones del dispositivo
-
+dispositivosConectados = ejecutar('%s devices' % adb) #Listar todas las aplicaciones del dispositivo
+dispositivosConectados = dispositivosConectados.strip()
+if (dispositivosConectados == 'List of devices attached'):
+    raise Exception("Por favor conecte un dispositivo fisico y active la depuración para iniciar el proceso")
 # Instalar aplicación en el sistema, en este caso se escoge WolframAlpha
 ejecutar('echo {}'.format(" ======== Instalando Aplicacion ========"))
 ejecutar('%s install -d "%s"' % (adb, rutaAPK))
 
 #Ejecutar la aplicación instalada
 ejecutarAplicacion(walphaPackage)
-time.sleep(0.35)
+time.sleep(0.5)
 screenShot()
 HTMLElemento(0, "Ejecutar aplicacion instalada", nombreCaptura)
 ejecutar('%s shell input keyevent KEYCODE_BACK' % adb) 
